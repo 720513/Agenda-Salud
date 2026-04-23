@@ -8,10 +8,10 @@ exports.getAllHistorias = async (req, res) => {
         CONCAT(up.nombre, ' ', up.apellido) AS nombre_paciente,
         CONCAT(um.nombre, ' ', um.apellido) AS nombre_medico
         FROM historia_clinica h
-        JOIN paciente p ON h.id_paciente = p.id_paciente
-        JOIN usuario up ON p.id_usuario = up.id_usuario
-        JOIN medico m ON h.id_medico = m.id_medico
-        JOIN usuario um ON m.id_usuario = um.id_usuario
+        LEFT JOIN paciente p ON h.id_paciente = p.id_paciente
+        LEFT JOIN usuario up ON p.id_usuario = up.id_usuario
+        LEFT JOIN medico m ON h.id_medico = m.id_medico
+        LEFT JOIN usuario um ON m.id_usuario = um.id_usuario
         `;
         const [results] = await db.query(sql);
         res.status(200).json(results);

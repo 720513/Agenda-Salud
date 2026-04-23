@@ -8,10 +8,10 @@ exports.getAllCitas = async (req, res) => {
           CONCAT(up.nombre, ' ', up.apellido) AS nombre_paciente,
            CONCAT(um.nombre, ' ',um.apellido) AS nombre_medico
     FROM cita c
-    JOIN paciente p ON c.id_paciente = p.id_paciente
-    JOIN usuario up ON p.id_usuario = up.id_usuario
-    JOIN medico m ON c.id_medico = m.id_medico
-    JOIN usuario um ON m.id_usuario = um.id_usuario
+    LEFT JOIN paciente p ON c.id_paciente = p.id_paciente
+    LEFT JOIN usuario up ON p.id_usuario = up.id_usuario
+    LEFT JOIN medico m ON c.id_medico = m.id_medico
+    LEFT JOIN usuario um ON m.id_usuario = um.id_usuario
     `;
      const [results] = await db.query(sql);
      res.status(200).json(results);
@@ -25,7 +25,13 @@ exports.getAllCitas = async (req, res) => {
         try {
             const sql = 'INSERT INTO cita (id_paciente, id_medico, fecha, hora, estado, motivo) VALUES (?, ?, ?, ?, ?, ?)';
             const [result] = await db.query(sql, [id_paciente, id_medico, fecha, hora, estado, motivo]);
-            res.status(201).json({ mensaje: "Cita programada con exito", id: result.inserId });
+            res.status(201).json({ mensaje: "Cita programada con exito", id: result.inserId,
+            recordatorio: [
+                "Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oportuna.",
+                "Recuerde traer su documento de identidad y cualquier informacion medica relevante para su consulta.",
+                "Si desea cancelar o reprogramar su cita, por favor hacerlo minimo con 12 horas de anticipacion para evitar cargos por cancelacion tardia."
+            ]
+        });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -37,7 +43,13 @@ exports.getAllCitas = async (req, res) => {
         try {
             const sql = 'UPDATE cita SET id_paciente=?, id_medico=?, fecha=?, hora=?, estado=?, motivo=? WHERE id_cita=?';
             await db.query(sql, [id_paciente, id_medico, fecha, hora, estado, motivo, id_cita]);
-            res.status(200).json({ mensaje: "cita actualizada correctamente" });
+            res.status(200).json({ mensaje: "cita actualizada correctamente",
+            recordatorios: [
+                "Recuerde: Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oprtuna.",
+                "Recuerde traer su documento de identidad y cualquier informacion medica relevante para su consulta.",
+                "Si desea cancelar o reprogramar su cita, por favor hacerlo minimo con 12 horas de anticipacion para evitar cargos por cancelacion tardia."
+            ]
+        });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }

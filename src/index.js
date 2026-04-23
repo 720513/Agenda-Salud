@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const morgan = require('morgan');
 const db = require('./config/db'); //Importa tus conecciones exitosas
+const recordatorios = require('./recordatorios'); //Importa el modulo de recordatorios
 // 1. Middlewares (para que el servidor enteinda JSON)
 app.use(cors());
  app.use(express.json());
