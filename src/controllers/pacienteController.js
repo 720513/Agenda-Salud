@@ -1,9 +1,7 @@
-const db = require('../config/db');
+const Paciente = require('../models/pacienteModel');
 exports.createPaciente = async (req, res) => {
     try {
-        const { id_usuario, tipo_sangre, sexo, fecha_nacimiento, telefono, direccion, estado } = req.body;
-        const query = 'INSERT INTO paciente (id_usuario, tipo_sangre, sexo, fecha_nacimiento, telefono, direccion, estado) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        const [result] = await db.query(query,  [id_usuario, tipo_sangre, sexo, fecha_nacimiento, telefono, direccion, estado]);
+        const result = await Paciente.create(req,body);
         res.status(201).json({
             mensaje: '¡paciente guardado con exito!',
             id: result.insertId

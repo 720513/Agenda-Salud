@@ -1,8 +1,8 @@
-const db = require('../config/db');
+const Medico = require('..models/medicoModel');
 // Obtener todos los medicos
 exports.getAllMedicos = async (req, res) => {
         try {
-            const [results] = await db.query('SELECT * FROM medico');
+            const results = await Medico.findAl();
             res.json(results);
         } catch (err) {
             console.log("Error al consultar medicos:", err.message);
@@ -13,9 +13,7 @@ exports.getAllMedicos = async (req, res) => {
 // Crear un nuevo medico
 exports.createMedico =  async (req, res) => {
     try{
-    const { id_usuario, id_especialista, numero_licencia, años_experiencia, estado } = req.body;
-    const query = 'INSERT INTO medico (id_usuario, id_especialista, numero_licencia, años_experiencia, estado) VALUES (?, ?, ?, ?, ?)';
-    const [result] = await db.query(query, [id_usuario, id_especialista, numero_licencia, años_experiencia, estado]);
+    const result = await Medico.create(req.body);
         res.json ({ mensaje: 'Medico creado exitosamente', id: result.insertId});
     } catch (err) {
         console.log("Error en POST:", err.message);

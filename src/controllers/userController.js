@@ -1,8 +1,8 @@
-const db = require('../config/db');
+const User = require('../models/userModel');
 // 1. OBTENER TODOS LOS USUARIOS (GET)
 const getAllUsers = async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM usuario');
+        const rows = await User.findAll();
         res.json(rows);
     } catch (err) {
         console.error(err);
