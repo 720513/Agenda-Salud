@@ -5,6 +5,6 @@ const horarioController = require('../controllers/horarioController');
 router.get('/', horarioController.getAllHorarios);
 router.post('/', horarioController.createHorario);
 // Ruta para actualizar y eliminar un horario especifico por su ID
-router.put('/:id_horario', horarioController.updateHorario);
-router.delete('/:id_horario', horarioController.deleteHorario);
+router.put('/:id', horarioController.updateHorario);
+router.delete('/:id', horarioController.deleteHorario);
 module.exports = router;

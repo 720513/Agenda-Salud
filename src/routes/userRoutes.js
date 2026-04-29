@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getAllUsers, createUser, actualizarUsuario, deleteUser } =require('../controllers/userController');
+const userController = require('../controllers/userController');
 // definimos que cuando alguien entre a "/usuarios", use la funcion de tu controlador
-router.get('/', getAllUsers);
-router.post('/', createUser);
+router.get('/', userController.getAllUser);
+router.post('/', userController.createUser);
+router.post('/login', userController.loginUser);
 // ruta para actualizar un usuario
-router.put('/:id_usuario', actualizarUsuario);
+router.put('/:id', userController.updateUser);
 // ruta para eliminar un usuario
-router.delete('/:id', deleteUser);
+router.delete('/:id', userController.deleteUser);
 module.exports = router;

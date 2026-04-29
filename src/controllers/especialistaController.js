@@ -1,8 +1,8 @@
-const db = require('../config/db');
+const Especialista = require('../models/especialistaModel');
 // Obtener todos los especialistas
 exports.getAllEspecialistas = async (req, res) => {
     try {
-        const [results] = await db.query('SELECT * FROM especialista');
+        const results = await Especialista.findAll();
         res.status(200).json(results);
     } catch (err) {
         res.status(500).json({ error: err.message});
@@ -11,10 +11,9 @@ exports.getAllEspecialistas = async (req, res) => {
 // Crear un nuevo especialista
 exports.createEspecialista = async (req, res) => {
     try {
-        const { nombre_especialidad, descripcion, estado } = req.body;
-        const sql = 'INSERT INTO especialista (nombre_especialidad, descripcion, estado) VALUES (?, ?, ?)';
-        const [result] = await db.query(sql, [nombre_especialidad, descripcion, estado]);
-        res.status(201).json({ mensaje: "Especialista creado exitosamente", id: result.insertId });
+        const datos = req.body;
+        const result = await Especialista.create(datos);
+        res.status(201).json({ mensaje: "Especialidad creado con exito", id: result.insertId });
     } catch (err) {
         res.status(500).json({ error: err.message});
     }
@@ -22,21 +21,20 @@ exports.createEspecialista = async (req, res) => {
 // Actualizar un especialista
 exports.updateEspecialista = async (req, res) => {
     try {
-        const { id_especialista } = req.params;
-        const { nombre_especialidad, descripcion, estado } = req.body;
-        const sql = 'UPDATE especialista SET nombre_especialidad=?, descripcion=?, estado=? WHERE id_especialista=?';
-        await db.query(sql, [nombre_especialidad, descripcion, estado, id_especialista]);
+        const { id } = req.params;
+        const datos = req.body;
+        await Especialista.update(id, datos);
         res.status(200).json({ message: "Especialista actualizado con exito" });
     } catch (err) {
         res.status(500).json({ error: err.message  });
     }
 };
 // Eliminar un especialista
-exports.deleteEspecialista = async (req,res) => {
+exports.deleteEspecialista = async (req, res) => {
     try {
-        const { id_especialista } = req.params;
-        await db.query('DELETE FROM especialista WHERE id_especialista = ?', [id_especialista]);
-        res.status(200).json({ message: "Especialista eliminado con exito" });
+        const { id } = req.params;
+        await Especialista.delete(id);
+        res.status(200).json({ mensaje: "Especialista eliminado con exito" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

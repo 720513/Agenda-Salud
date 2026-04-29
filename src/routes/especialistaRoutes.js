@@ -4,6 +4,6 @@ const especialistaController = require('../controllers/especialistaController');
 // Definir las rutas y conectarlas con el controlador
 router.get('/', especialistaController.getAllEspecialistas);
 router.post('/', especialistaController.createEspecialista);
-router.put('/:id_especialista', especialistaController.updateEspecialista);
-router.delete('/:id_especialista', especialistaController.deleteEspecialista);
+router.put('/:id', especialistaController.updateEspecialista);
+router.delete('/:id', especialistaController.deleteEspecialista);
 module.exports = router;

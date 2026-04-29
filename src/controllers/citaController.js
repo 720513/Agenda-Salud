@@ -1,30 +1,18 @@
-const db = require('../config/db');
+const Cita = require('../models/citaModel');
 // 1. Obtener todas las citas (Con JOIN para ver detalles del paciente y medico)
 exports.getAllCitas = async (req, res) => {
     try {
-        const sql = `
-           SELECT
-            c.id_cita, c.fecha, c.hora, c.estado, c.motivo,
-          CONCAT(up.nombre, ' ', up.apellido) AS nombre_paciente,
-           CONCAT(um.nombre, ' ',um.apellido) AS nombre_medico
-    FROM cita c
-    LEFT JOIN paciente p ON c.id_paciente = p.id_paciente
-    LEFT JOIN usuario up ON p.id_usuario = up.id_usuario
-    LEFT JOIN medico m ON c.id_medico = m.id_medico
-    LEFT JOIN usuario um ON m.id_usuario = um.id_usuario
-    `;
-     const [results] = await db.query(sql);
+     const results = await Cita.findAll();
      res.status(200).json(results);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-    };
-    // 2. Crear una nueva cita
+};
+     // 2. Crear una nueva cita
     exports.createCita = async (req, res) => {
-        const { id_paciente, id_medico, fecha, hora, estado, motivo } = req.body;
         try {
-            const sql = 'INSERT INTO cita (id_paciente, id_medico, fecha, hora, estado, motivo) VALUES (?, ?, ?, ?, ?, ?)';
-            const [result] = await db.query(sql, [id_paciente, id_medico, fecha, hora, estado, motivo]);
+        const datos = req.body; // id_paciente, id_medico, fecha, hora, estado, motivo 
+        const result = await Cita.create(datos);
             res.status(201).json({ mensaje: "Cita programada con exito", id: result.inserId,
             recordatorio: [
                 "Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oportuna.",
@@ -38,11 +26,10 @@ exports.getAllCitas = async (req, res) => {
     };
     // 3. Actualizar una cita existente
     exports.updateCita = async (req, res) => {
-        const {id_cita } = req.params;
-        const { id_paciente, id_medico, fecha, hora, estado, motivo } = req.body;
         try {
-            const sql = 'UPDATE cita SET id_paciente=?, id_medico=?, fecha=?, hora=?, estado=?, motivo=? WHERE id_cita=?';
-            await db.query(sql, [id_paciente, id_medico, fecha, hora, estado, motivo, id_cita]);
+        const {id } = req.params;
+        const datos = req.body;
+            await Cita.update(id, datos);
             res.status(200).json({ mensaje: "cita actualizada correctamente",
             recordatorios: [
                 "Recuerde: Se recomienda llegar 20 minutos antes de su cita, para evitar retrasos y garantizar una atencion oprtuna.",
@@ -56,12 +43,13 @@ exports.getAllCitas = async (req, res) => {
     };
     // 4. Eliminar una cita
     exports.deleteCita = async (req, res) => {
-        const { id_cita } = req.params;
         try {
-            const sql = 'DELETE FROM cita WHERE id_cita = ?';
-            await db.query(sql, [id_cita]);
-            res.status(200).json({ mensaje: "Cita eliminada correctamente"});
-        }  catch (err) {
+        const { id } = req.params;
+            await Cita.delete(id, cita);
+            res.status(200).json({ mensaje: "Cita eliminada correctamente",
+                nota: "El espacio ha sido liberado en la agenda medica."
+            });
+         }  catch (err) {
                 res.status(500).json({ error: err.message });
-            }
-    };
+    }
+};

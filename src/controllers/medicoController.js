@@ -1,11 +1,10 @@
-const Medico = require('..models/medicoModel');
+const Medico = require('../models/medicoModel');
 // Obtener todos los medicos
 exports.getAllMedicos = async (req, res) => {
         try {
-            const results = await Medico.findAl();
-            res.json(results);
+            const result = await Medico.obtenerTodos();
+            res.status(200).json(result);
         } catch (err) {
-            console.log("Error al consultar medicos:", err.message);
             res.status(500).json({ error: err.message });
         }
 };
@@ -13,37 +12,55 @@ exports.getAllMedicos = async (req, res) => {
 // Crear un nuevo medico
 exports.createMedico =  async (req, res) => {
     try{
-    const result = await Medico.create(req.body);
-        res.json ({ mensaje: 'Medico creado exitosamente', id: result.insertId});
-    } catch (err) {
-        console.log("Error en POST:", err.message);
-        res.status(500).json({ error: err.message});
+    const result = await Medico.crear(req.body);
+        res.status(201).json({ mensaje: '¡Medico guardado con exito!', id: result.insertId });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al guardar el medico', error: error.message});
     }
 };
-// Actualizar un medico
+// Obtener medico por ID
+exports.getMedicoById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await Medico.obtenerPorId(id);
+        if (result.length > 0) {
+            res.status(200).json(result[0]);
+        } else {
+            res.status(404).json({ mensaje: 'Medico no encontrado' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message});
+    }
+};
+    // Actualizar un medico
 exports.updateMedico = async (req, res) => {
     try {
-    const { id_medico } = req.params;
-    const { id_usuario, id_especialista, numero_licencia, años_experiencia, estado } = req.body;
-    const query = 'UPDATE medico SET id_usuario=?, id_especialista=?, numero_licencia=?, años_experiencia=?, estado=? WHERE id_medico=?';
-    await db.query(query, [id_usuario, id_especialista, numero_licencia, años_experiencia, estado, id_medico]);
-        res.json({ mensaje: 'Medico actualizado con exito' });
-    } catch (err) {
-        console.log("Error en PUT:", err.message);
-        res.status(500).json({ error: err.massage });
+        const { id } = req.params;
+        const result = await Medico.actualizar(id, req.body);
+        if (result.affectedRows > 0) {
+        res.status(200).json({ mensaje: 'Medico actualizado con exito' });
+        } else {
+            res.status(404).json({ mensaje: 'Medico no encontrado' });
+        }
+      } catch (err) {
+        res.status(500).json({ error: error.massage });
     }
 };
 // Eliminar un medico
 exports.deleteMedico = async (req, res) => {
       try {
-         const { id_medico } = req.params;
-         await db.query(`DELETE FROM medico WHERE id_medico = ?`, [id_medico]);
-         res.json({ mensaje: 'Medico eliminado con exito' });
-      } catch (err) {
-          console.log("Error en DELETE:", err.message);
-          res.status(500).json({ error: err.message});
+         const { id } = req.params;
+         const result = await Medico.eliminar(id);
+         if (result.affectedRows > 0) {
+         res.status(200).json({ mensaje: 'Medico eliminado con exito' });
+         } else {
+            res.status(404).json({ mensaje: 'Medico no encontrado' });
+         }
+      } catch (error) {
+          res.status(500).json({ error: error.message});
     }
-};       
+};    
+
 
 
 
