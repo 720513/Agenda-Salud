@@ -44,9 +44,9 @@ loginUser = async (req, res) => {
     try {
         const { id } = req.params;
         await User.update(id, req.body);
-        res.json({ mensaje: "Usuario actualizado correctamente" });
+        res.status(200).json({ mensaje: "Usuario actualizado correctamente" });
      } catch (error) {
-        res.status(500).lson({ error: error.message });
+        res.status(500).json({ error: error.message });
      }
 };
 // 4. Eliminar usuario (DELETE)

@@ -32,7 +32,7 @@ const Cita = {
     // Actualizar cita (PUT)
     update: async (id, datos) => {
         try {
-            const [result] = await db.query('UPDATE cita SET ¡ WHERE id_cita = ?', [datos, id]);
+            const [result] = await db.query('UPDATE cita SET ? WHERE id_cita = ?', [datos, id]);
             return result;
         } catch (error) {
             throw error;

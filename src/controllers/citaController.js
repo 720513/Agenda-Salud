@@ -45,7 +45,7 @@ exports.getAllCitas = async (req, res) => {
     exports.deleteCita = async (req, res) => {
         try {
         const { id } = req.params;
-            await Cita.delete(id, cita);
+            await Cita.delete(id,);
             res.status(200).json({ mensaje: "Cita eliminada correctamente",
                 nota: "El espacio ha sido liberado en la agenda medica."
             });

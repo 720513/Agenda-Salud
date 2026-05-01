@@ -36,8 +36,8 @@ findAll: async () => {
 
     update: async (id, userData) => {
         try {
-            const { yipo_usuario, nombre, apellido, documento, correo, password, } = userData;
-            const [result] = await db.query('UPDATE usuario SET ? WHERE id_usuario = ?', [userData, id]);
+            const query = 'UPDATE usuario SET ? WHERE id_usuario = ?';
+            const [result] = await db.query(query, [userData, id]);
             return result;
         } catch (error) {
             throw error;
